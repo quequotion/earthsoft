@@ -1,0 +1,39 @@
+# Maintainer: Que Quotion <quequotion at gmail dot com>
+
+pkgname=epgrec-stz-git
+pkgver=20.d650665
+pkgrel=1
+pkgdesc="egpdump modified by stz2012."
+arch=('i686' 'x86_64')
+url='https://github.com/stz2012/epgdump/'
+license=('unknown')
+provides=('epgrec')
+depends=('b25' 'pcsclite')
+source=("git+https://github.com/stz2012/epgrec.git")
+sha512sums=('SKIP')
+makedepends=('git')
+optdepends=('pt3-drv: PT3 chardev driver')
+#install='recpt1.install'
+
+pkgver() {
+  cd "recpt1"
+  echo $(git rev-list --count HEAD).$(git rev-parse --short HEAD)
+}
+
+
+build() {
+  cd epgrec/
+  make
+
+}
+
+package() {
+  mkdir -m755 -p "$pkgdir/var/www/"
+  cp -R epgrec "$pkgdir/var/www/"
+  chown -R www-data:www-data "$pkgdir/var/www/epgrec/"
+  cd epgrec/
+  install -m755 -o www-data -g www-data  do-record.sh.pt1 $pkgdir/var/www/epgrec/do-record.sh
+  chmod 777 $pkgdir/var/www/epgrec/{cache,templates_c,video,thumbs,settings}
+  chmod 666 $pkgdir/var/www/epgrec/{thumbs,video}/index.html
+  install config.php.sample $pkgdir/var/www/epgrec/config.php
+}

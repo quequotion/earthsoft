@@ -1,0 +1,22 @@
+--- src/pt1_tune_src/tune.c	2010-04-25 20:03:44.000000000 +0900
++++ src/pt1_tune_src/tune.c.fixed	2016-01-13 02:57:24.793829643 +0900
+@@ -110,7 +110,7 @@
+ 	prop[0].cmd = DTV_FREQUENCY;
+ 	prop[0].u.data = channel->frequency;
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,33)
+-	prop[1].cmd = DTV_ISDBS_TS_ID;
++	prop[1].cmd = DTV_ISDBS_TS_ID_LEGACY;
+ #else
+ 	prop[1].cmd = DTV_ISDB_TS_ID;
+ #endif
+--- src/pt1_tune_src/tune.c	2016-01-13 03:06:09.348794843 +0900
++++ src/pt1_tune_src/tune.c.fixed	2016-01-13 03:26:43.024379665 +0900
+@@ -272,7 +272,7 @@
+ 	extern char*  optarg;
+ 	extern int  optind;
+ 
+-	while( (ch = getopt( argc, argv, "a:c:el:p:" )) != - 1 ){
++	while( (ch = getopt( argc, argv, "a:c:e:l:p:" )) != - 1 ){
+ 		switch( ch ){
+ 		case 'a':
+ 			ch = atoi( optarg );

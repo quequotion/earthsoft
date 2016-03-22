@@ -1,0 +1,34 @@
+# Maintainer: Que Quotion <quequotion at gmail dot com>
+
+pkgname=pt1_tune
+pkgver=2009.03.07
+pkgrel=1
+#install=pt1_tune.install
+pkgdesc="Tuner for Earthsoft DVB capture cards."
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('fuse_b25')
+#makedepends=()
+groups=('earthsoft')
+url="http://www.drvlabo.jp/"
+source=(http://www.drvlabo.jp/files/$pkgname.tgz
+        thisfix)
+sha256sums=('b435d71c8fb41766a518108470f31ba6cdcee81d8dfbbb75f3bc4a8a152ffd1f'
+            '08625c2694a0e78454fd1bbbb484f5b0683efd3b79d915ec71c284a83960adce')
+
+prepare() {
+
+  cd "$pkgname"_src
+  patch -Np2 < ../thisfix
+}
+
+build() {
+  cd "$pkgname"_src
+  make
+}
+
+package() {
+  cd "$pkgname"_src
+  mkdir -m755 -p "$pkgdir/usr/bin/"
+  install -m755 tune "$pkgdir/usr/bin/$pkgname"
+}
