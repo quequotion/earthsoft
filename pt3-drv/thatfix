@@ -1,0 +1,46 @@
+diff --git a/Makefile b/Makefile
+index 493af6c..abd65b3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,8 +3,12 @@ VERBOSITY = 0
+ EXTRA_CFLAGS += -Wformat=2
+ KVER ?= `uname -r`
+ 
++ifndef DESTDIR
++  DESTDIR := /
++endif
++
+ KBUILD = /lib/modules/$(KVER)/build
+-INSTALL_DIR = /lib/modules/$(KVER)/kernel/drivers/video
++INSTALL_DIR = $(DESTDIR)/usr/lib/modules/$(KVER)/kernel/drivers/video
+ 
+ all: ${TARGET}
+ 
+@@ -30,17 +34,17 @@ version.h:
+ 	fi
+ 
+ uninstall:
+-	rm -vf $(INSTALL_DIR)/$(TARGET)* /etc/udev/rules.d/99-pt3.rules
++	rm -vf $(INSTALL_DIR)/$(TARGET)* $(DESTDIR)/etc/udev/rules.d/99-pt3.rules
+ 
+ dkms: $(TARGET)
+ 	if [ -d /etc/udev/rules.d -a ! -f /etc/udev/rules.d/99-pt3.rules ] ; then \
+-		install -m 644 etc/99-pt3.rules /etc/udev/rules.d ; \
++		install -m 644 etc/99-pt3.rules $(DESTDIR)/etc/udev/rules.d ; \
+ 	fi
+ 
+-install: uninstall dkms
++install: dkms
+ 	install -d $(INSTALL_DIR)
+ 	install -m 644 $(TARGET) $(INSTALL_DIR)
+-	depmod -a $(KVER)
++	#depmod -a $(KVER)
+ 
+ install_compress: install
+ 	. $(KBUILD)/.config ; \
+@@ -51,4 +55,4 @@ install_compress: install
+ 	elif [ $$CONFIG_DECOMPRESS_GZIP = "y" ] ; then \
+ 		gzip  -9 $(INSTALL_DIR)/$(TARGET); \
+ 	fi
+-	depmod -a $(KVER)
++	#depmod -a $(KVER)
